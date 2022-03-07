@@ -3,12 +3,16 @@ using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class PlayerContoller : MonoBehaviourPunCallbacks, IDamageable
 {
     [SerializeField] private GameObject cameraHolder; 
     [SerializeField] private float mouseSensitivity, sprintSpeed, walkSpeed, jumpForce, smoothTime;
+
+    [SerializeField] TMP_Text healthInfo;
+    [SerializeField] GameObject ui;
 
     [SerializeField] Item[] items;
 
@@ -47,6 +51,7 @@ public class PlayerContoller : MonoBehaviourPunCallbacks, IDamageable
         {
             Destroy(GetComponentInChildren<Camera>().gameObject);
             Destroy(rb);
+            Destroy(ui);
         }
     }
     void Update()
@@ -173,6 +178,7 @@ public class PlayerContoller : MonoBehaviourPunCallbacks, IDamageable
             return;
 
         currentHealth -= damage;
+        healthInfo.text = currentHealth.ToString("#");
 
         if (currentHealth <= 0)
         {
