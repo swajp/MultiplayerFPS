@@ -108,6 +108,8 @@ public class PlayerContoller : MonoBehaviourPunCallbacks, IDamageable
     }
     void Look()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+
         transform.Rotate(Vector3.up * Input.GetAxisRaw("Mouse X") * mouseSensitivity);
 
         verticalLookRotation += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
@@ -167,12 +169,10 @@ public class PlayerContoller : MonoBehaviourPunCallbacks, IDamageable
 
         currentHealth -= damage;
 
-        if(currentHealth <= 0)
+        if (currentHealth <= 0)
         {
             Die();
         }
-
-        Debug.Log("Took damage: " + damage);
     }
     void Die()
     {
