@@ -15,6 +15,7 @@ public abstract class Gun : Item
     public int reloadTime;
     [HideInInspector] public float timeToReload;
     [HideInInspector] public bool isReloading = false;
+    public AudioSource gunSounds;
     public AudioClip gunShot;
     public TMP_Text ammoText;
 }

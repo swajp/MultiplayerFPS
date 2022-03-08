@@ -36,6 +36,7 @@ public class SingleShotGun : Gun
         }
         if(Time.time >= nextTimeToFire)
         {
+            PV.RPC("RPC_PlaySound", RpcTarget.All, null);
             nextTimeToFire = Time.time + 1f / fireRate;
             currentAmmo--;
             Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f));
@@ -73,5 +74,10 @@ public class SingleShotGun : Gun
             Destroy(bulletImpactObj, 10f);
             bulletImpactObj.transform.SetParent(colliders[0].transform);
         }
+    }
+    [PunRPC]
+    public void RPC_PlaySound()
+    {
+        gunSounds.PlayOneShot(gunShot);
     }
 }

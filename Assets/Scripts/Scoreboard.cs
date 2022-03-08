@@ -8,6 +8,7 @@ public class Scoreboard : MonoBehaviourPunCallbacks
 {
     [SerializeField] Transform container;
     [SerializeField] GameObject scoreboardItemPrefab;
+    [SerializeField] GameObject scoreboardCanvas;
 
     Dictionary<Player, ScoreboardItem> scoreboardItems = new Dictionary<Player, ScoreboardItem>();
 
@@ -16,6 +17,17 @@ public class Scoreboard : MonoBehaviourPunCallbacks
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             AddScoreboardItem(player);
+        }
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            scoreboardCanvas.SetActive(true);
+        }
+        else if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            scoreboardCanvas.SetActive(false);
         }
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)
