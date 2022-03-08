@@ -13,22 +13,54 @@ public class SingleShotGun : Gun
     {
         PV = GetComponent<PhotonView>();
     }
+    private void Update()
+    {
+        ammoText.text = currentAmmo.ToString() + "/" + maxAmmo.ToString();
+        if (isReloading)
+        {
+            ammoText.text = "RELOADING";
+        }
+    }
     public override void Use()
     {
         Debug.Log("Using gun" + itemInfo.itemName);
+        Debug.Log(currentAmmo);
         Shoot();
     }
     void Shoot()
     {
-        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f));
-        ray.origin = cam.transform.position;
-
-        if(Physics.Raycast(ray, out RaycastHit hit))
+        ammoText.text = currentAmmo.ToString() + "/" + maxAmmo.ToString();
+        if (isReloading)
         {
-            Debug.Log("We hit " + hit.collider.gameObject);
-            hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(((GunInfo)itemInfo).damage);
-            PV.RPC("RPC_Shoot", RpcTarget.All, hit.point, hit.normal);
+            return;
         }
+        if(Time.time >= nextTimeToFire)
+        {
+            nextTimeToFire = Time.time + 1f / fireRate;
+            currentAmmo--;
+            Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f));
+            ray.origin = cam.transform.position;
+
+            if (Physics.Raycast(ray, out RaycastHit hit) && currentAmmo >= 0)
+            {
+                Debug.Log("We hit " + hit.collider.gameObject);
+                hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(((GunInfo)itemInfo).damage);
+                PV.RPC("RPC_Shoot", RpcTarget.All, hit.point, hit.normal);
+            }
+            if (currentAmmo <= 0)
+            {
+                StartCoroutine(Reload());
+                return;
+            }
+        }
+
+    }
+    IEnumerator Reload()
+    {
+        isReloading = true;
+        yield return new WaitForSeconds(reloadTime);
+        currentAmmo = maxAmmo;
+        isReloading = false;
     }
     [PunRPC]
     void RPC_Shoot(Vector3 hitPosition, Vector3 hitNormal)

@@ -94,11 +94,14 @@ public class PlayerContoller : MonoBehaviourPunCallbacks, IDamageable
                 EquipItem(itemIndex - 1);
             }
         }
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0) && itemIndex == 0)
         {
             items[itemIndex].Use();
         }
-
+        if (Input.GetMouseButtonDown(0) && itemIndex == 1)
+        {
+            items[itemIndex].Use();
+        }
         if (transform.position.y < -10f)
         {
             Die();
